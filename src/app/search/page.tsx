@@ -39,8 +39,8 @@ const SearchPage = () => {
         <ul className="space-y-2">
           {results.map((item: any, idx: number) => (
             <li key={idx} className="p-4 border rounded hover:bg-gray-100">
-              <h2 className="font-semibold">{item.title}</h2>
-              <p className="text-sm text-gray-600">{item.description}</p>
+              <h2 className="font-semibold">{item.name}</h2>
+              <p className="text-sm text-gray-600">{item.category}</p>
             </li>
           ))}
         </ul>
