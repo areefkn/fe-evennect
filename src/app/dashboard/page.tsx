@@ -1,10 +1,10 @@
 import React from "react";
-import DasboardMain from "@/pages/dasboard-page";
+import DashboardPage from "@/pages/dasboard-page";
 
-export default function DasboardPage() {
+export default function Dasboard() {
   return (
     <>
-      <DasboardMain />
+      <DashboardPage />
     </>
   );
 }
