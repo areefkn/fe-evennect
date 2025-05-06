@@ -34,6 +34,8 @@ export default function TransactionAction({ id, disabled, onReload }: Props) {
     }
   };
 
+  if (disabled) return null;
+
   return (
     <div className="flex gap-2 justify-center">
       <button

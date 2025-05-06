@@ -1,16 +1,19 @@
 "use client";
 
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { eventSchema } from "./schema";
-import { ICreateEvent } from "./types";
+import { createEventSchema } from "../component/schema";
+import { CreateEventPayload } from "../component/types";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { useRouter } from "next/router";
 
-export default function CreateEventForm() {
-  const router = useRouter();
+const getToken = () =>
+  document.cookie
+    .split("; ")
+    .find((c) => c.startsWith("access_token="))
+    ?.split("=")[1];
 
-  const initialValues: ICreateEvent = {
+const CreateEventForm = ({ onSuccess }: { onSuccess: () => void }) => {
+  const initialValues: CreateEventPayload = {
     name: "",
     description: "",
     category: "",
@@ -18,17 +21,13 @@ export default function CreateEventForm() {
     Pay: false,
     start_date: "",
     end_date: "",
-    available_seats: 0,
+    available_seats: 1,
   };
 
-  const handleSubmit = async (values: ICreateEvent) => {
+  const handleSubmit = async (values: CreateEventPayload) => {
     try {
-      const token = document.cookie
-        .split("; ")
-        .find((c) => c.startsWith("access_token="))
-        ?.split("=")[1];
-
-      const res = await axios.post(
+      const token = getToken();
+      await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/events`,
         values,
         {
@@ -37,104 +36,104 @@ export default function CreateEventForm() {
           },
         }
       );
-
-      Swal.fire("Success", "Event created", "success");
-      router.push(`/dashboard/events/${res.data.id}/tickets`);
-    } catch (err: any) {
-      Swal.fire("Error", err.response?.data?.message || "Failed", "error");
+      Swal.fire({
+        icon: "success",
+        title: "Event Created",
+        text: "Your event has been successfully created!",
+      });
+      onSuccess();
+    } catch (err) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Failed to create event. Please try again!",
+      });
     }
   };
 
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={eventSchema}
+      validationSchema={createEventSchema}
       onSubmit={handleSubmit}
     >
-      <Form className="space-y-4 max-w-2xl mx-auto p-4">
+      <Form className="space-y-4 p-6 bg-white border rounded-lg shadow-md">
+        {[
+          { label: "Name", name: "name" },
+          { label: "Description", name: "description" },
+          { label: "Category", name: "category" },
+          { label: "Location", name: "location" },
+        ].map(({ label, name }) => (
+          <div key={name}>
+            <label className="block font-medium mb-1">{label}</label>
+            <Field
+              name={name}
+              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+            <ErrorMessage
+              name={name}
+              component="div"
+              className="text-sm text-red-500 mt-1"
+            />
+          </div>
+        ))}
+
         <div>
-          <label>Event Name</label>
-          <Field name="name" className="input" />
+          <label className="block font-medium mb-1">Start Date</label>
+          <Field
+            name="start_date"
+            type="date"
+            className="w-full p-2 border border-gray-300 rounded"
+          />
           <ErrorMessage
-            name="name"
-            className="text-red-500 text-sm"
+            name="start_date"
             component="div"
+            className="text-sm text-red-500 mt-1"
           />
         </div>
 
         <div>
-          <label>Description</label>
-          <Field name="description" as="textarea" className="input" />
+          <label className="block font-medium mb-1">End Date</label>
+          <Field
+            name="end_date"
+            type="date"
+            className="w-full p-2 border border-gray-300 rounded"
+          />
           <ErrorMessage
-            name="description"
-            className="text-red-500 text-sm"
+            name="end_date"
             component="div"
+            className="text-sm text-red-500 mt-1"
           />
         </div>
 
         <div>
-          <label>Category</label>
-          <Field name="category" className="input" />
-          <ErrorMessage
-            name="category"
-            component="div"
-            className="text-red-500 text-sm"
-          />
-        </div>
-
-        <div>
-          <label>Location</label>
-          <Field name="location" className="input" />
-          <ErrorMessage
-            name="location"
-            component="div"
-            className="text-red-500 text-sm"
-          />
-        </div>
-
-        <div>
-          <label>Available Seats</label>
-          <Field name="available_seats" type="number" className="input" />
-          <ErrorMessage
+          <label className="block font-medium mb-1">Available Seats</label>
+          <Field
             name="available_seats"
-            component="div"
-            className="text-red-500 text-sm"
+            type="number"
+            min={1}
+            className="w-full p-2 border border-gray-300 rounded"
           />
         </div>
 
-        <div className="flex items-center gap-2">
-          <Field name="Pay" type="checkbox" />
-          <label>Paid Event?</label>
-        </div>
-
-        <div className="flex gap-4">
-          <div className="flex-1">
-            <label>Start Date</label>
-            <Field name="start_date" type="date" className="input" />
-            <ErrorMessage
-              name="start_date"
-              component="div"
-              className="text-red-500 text-sm"
-            />
-          </div>
-          <div className="flex-1">
-            <label>End Date</label>
-            <Field name="end_date" type="date" className="input" />
-            <ErrorMessage
-              name="end_date"
-              component="div"
-              className="text-red-500 text-sm"
-            />
-          </div>
+        <div className="flex items-center">
+          <Field
+            name="Pay"
+            type="checkbox"
+            className="mr-2 w-4 h-4 accent-blue-600"
+          />
+          <label className="font-medium">Paid Event</label>
         </div>
 
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-200"
         >
           Create Event
         </button>
       </Form>
     </Formik>
   );
-}
+};
+
+export default CreateEventForm;

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import TransactionTable from "./component/table";
 
-export default function OrganizerTransactionsPage() {
+export default function OrganizerTransactions() {
   const [transactions, setTransactions] = useState([]);
 
   const fetchTransactions = async () => {
