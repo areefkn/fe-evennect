@@ -3,7 +3,7 @@
 import { Formik, Form, Field, FormikProps } from "formik";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import  Swal from "sweetalert2"
+import Swal from "sweetalert2";
 import RegisterSchema from "./schema";
 import IRegister from "./type";
 
@@ -15,6 +15,7 @@ export default function RegisterForm() {
     last_name: "",
     password: "",
     role: "", // Default role
+    referral_code: "",
   };
 
   const register = async (values: IRegister) => {
@@ -28,9 +29,10 @@ export default function RegisterForm() {
           last_name: values.last_name,
           password: values.password,
           role: values.role,
+          referral_code: values.referral_code || undefined,
         }
       );
-  
+
       Swal.fire({
         title: data.message,
         icon: "success",
@@ -40,46 +42,47 @@ export default function RegisterForm() {
         // Setelah alert selesai, arahkan ke halaman login
         router.push("/login");
       });
-  
     } catch (err: any) {
       console.error("Register error:", err);
       Swal.fire({
         title: "Error!",
-        text: err?.response?.data?.message || "Something went wrong. Please try again.",
+        text:
+          err?.response?.data?.message ||
+          "Something went wrong. Please try again.",
         icon: "error",
         confirmButtonText: "OK",
       });
     }
 
-      //   const { data } = await axios.get(
-      //     `http://localhost:5050/user?email=${values.email}`
-      //   );
-  
-      //   if (data.length > 0) throw new Error("Email sudah terdaftar");
-  
-      //   // Prepare data for server-side password hashing and JWT handling
-      //   const userData = {
-      //     ...values,
-      //     password: values.password, // Password will be hashed server-side
-      //   };
-  
-      //   await axios.post("http://localhost:5050/user", userData);
-  
-      //   alert("Register Success");
-  
-      //   router.push("/login");
-      // } catch (err) {
-      //   alert((err as any).message);
-      // }
-    };
-    
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-cover bg-center">
+    //   const { data } = await axios.get(
+    //     `http://localhost:5050/user?email=${values.email}`
+    //   );
+
+    //   if (data.length > 0) throw new Error("Email sudah terdaftar");
+
+    //   // Prepare data for server-side password hashing and JWT handling
+    //   const userData = {
+    //     ...values,
+    //     password: values.password, // Password will be hashed server-side
+    //   };
+
+    //   await axios.post("http://localhost:5050/user", userData);
+
+    //   alert("Register Success");
+
+    //   router.push("/login");
+    // } catch (err) {
+    //   alert((err as any).message);
+    // }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-cover bg-center">
       <div className="bg-white p-4  rounded-lg shadow-lg max-w-md w-80">
         <Formik
           initialValues={initialValues}
           validationSchema={RegisterSchema}
-          onSubmit={async(values, { resetForm }) => {
+          onSubmit={async (values, { resetForm }) => {
             await register(values);
             resetForm();
           }}
@@ -154,7 +157,20 @@ export default function RegisterForm() {
                     <option value="ORGANIZER">ORGANIZER</option>
                   </Field>
                 </div>
-                <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                <div className="flex flex-col">
+                  <label>Referral Code:</label>
+                  <Field
+                    type="text"
+                    name="referral_code"
+                    onChange={handleChange}
+                    value={values.referral_code}
+                    className="border border-gray-300 rounded-lg p-2"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                >
                   Submit
                 </button>
               </Form>
