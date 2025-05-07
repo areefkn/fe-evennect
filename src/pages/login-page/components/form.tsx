@@ -11,6 +11,7 @@ import Swal from "sweetalert2";
 
 import LoginSchema from "./schema";
 import ILogin from "./type";
+import Link from "next/link";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -106,6 +107,14 @@ export default function LoginForm() {
                     {errors.password}
                   </div>
                 ) : null}
+              </div>
+              <div className="text-sm text-right -mt-4">
+                <Link
+                  href="/forgot-password"
+                  className="text-blue-600 hover:underline"
+                >
+                  Forgot password?
+                </Link>
               </div>
               <button
                 type="submit"
