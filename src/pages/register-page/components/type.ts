@@ -5,4 +5,5 @@ export default interface IRegister {
   last_name: string;
   password: string;
   role: string; // tambahkan ini
+  referral_code: string;
 }

@@ -4,6 +4,13 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 
+interface Coupon {
+  id: string;
+  code: string;
+  discount: number;
+  end_date: string;
+}
+
 interface User {
   first_name: string;
   last_name: string;
@@ -11,6 +18,7 @@ interface User {
   profile_pict: string | null;
   referral_code: string;
   point: number;
+  coupons: Coupon[];
 }
 
 export default function UserProfile() {
@@ -66,6 +74,29 @@ export default function UserProfile() {
           <p className="text-gray-500">Points</p>
           <p className="font-semibold">{user.point}</p>
         </div>
+      </div>
+      <div className="mt-6">
+        <h3 className="text-xl font-semibold mb-2">My Coupons</h3>
+        {user.coupons && user.coupons.length > 0 ? (
+          <ul className="space-y-3">
+            {user.coupons.map((coupon) => (
+              <li key={coupon.id} className="bg-green-100 p-4 rounded shadow">
+                <p className="font-bold text-green-800">Code: {coupon.code}</p>
+                <p>Discount: {coupon.discount}</p>
+                <p>
+                  Expires at:{" "}
+                  {new Date(coupon.end_date).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-gray-500">You don't have any coupons yet.</p>
+        )}
       </div>
     </div>
   );
