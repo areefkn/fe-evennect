@@ -12,6 +12,7 @@ export default function ProfileSettingForm() {
     first_name: "",
     last_name: "",
   });
+  const [profilePict, setProfilePict] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [loadingPassword, setLoadingPassword] = useState(false);
@@ -31,10 +32,12 @@ export default function ProfileSettingForm() {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
+        const user = res.data.data;
         setInitialNameValues({
-          first_name: res.data.data.first_name,
-          last_name: res.data.data.last_name,
+          first_name: user.first_name,
+          last_name: user.last_name,
         });
+        setProfilePict(user.profile_pict || null); // set foto profil dari backend
       })
       .catch((err) => {
         console.error(err);
@@ -53,7 +56,7 @@ export default function ProfileSettingForm() {
 
     try {
       setLoadingProfile(true);
-      await axios.patch(
+      const res = await axios.patch(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/profile`,
         formData,
         {
@@ -64,6 +67,9 @@ export default function ProfileSettingForm() {
         }
       );
       Swal.fire("Success", "Profile updated successfully", "success");
+
+      // Perbarui foto profil yang ditampilkan setelah update
+      setProfilePict(res.data.data.profile_pict || null);
     } catch (err: any) {
       console.error(err);
       Swal.fire(
@@ -113,13 +119,24 @@ export default function ProfileSettingForm() {
       {/* Profile Update Form */}
       <div>
         <h2 className="text-2xl font-bold mb-4">Profile Settings</h2>
+
+        {profilePict && (
+          <div className="mb-4">
+            <img
+              src={`${process.env.NEXT_PUBLIC_BASE_API_URL}${profilePict}`}
+              alt="Profile"
+              className="w-32 h-32 rounded-full object-cover"
+            />
+          </div>
+        )}
+
         <Formik
           enableReinitialize
           initialValues={initialNameValues}
           validationSchema={changeNameSchema}
           onSubmit={handleUpdateProfile}
         >
-          {({ setFieldValue }) => (
+          {() => (
             <Form className="space-y-4">
               <div>
                 <label className="block text-sm font-medium">First Name</label>
