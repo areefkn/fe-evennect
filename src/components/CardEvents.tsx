@@ -35,9 +35,14 @@ const CardEvents: React.FC<ICardEvents> = ({
             maximumFractionDigits: 0,
         }).format(value);
 
+        const maxTitleLength = 26;
+        const trimmedTitle = title.length > maxTitleLength
+        ? title.slice(0, maxTitleLength) + '...'
+        : title;
+
         return (
             <div
-            className="bg-white rounded-xl w-full shadow hover:shadow-md transition cursor-pointer overflow-hidden"
+            className="bg-white rounded-xl w-full shadow hover:shadow-md transition cursor-pointer overflow-hidden "
             onClick={handleClick}
             >
             <div className="relative w-full  aspect-[2/1] overflow-hidden rounded-t-lg">
@@ -50,7 +55,7 @@ const CardEvents: React.FC<ICardEvents> = ({
             />
             </div>
             <div className="p-4 space-y-2">
-                <h3 className="text-lg font-semibold line-clamp-2">{title}</h3>
+                <h3 className="text-lg font-semibold line-clamp-2">{trimmedTitle}</h3>
                 <p className="text-sm text-gray-600">📅 {date}</p>
                 <p className="text-sm text-gray-800 font-bold">
                 🎫 {formatPrice(price)}
