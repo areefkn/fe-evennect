@@ -7,13 +7,16 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { changeNameSchema } from "../schema/changeNameSchema";
 import { changePasswordSchema } from "../schema/changePasswordSchema";
 
+
 export default function ProfileSettingForm() {
   const [initialNameValues, setInitialNameValues] = useState({
     first_name: "",
     last_name: "",
   });
-  const [profilePict, setProfilePict] = useState<string | null>(null);
+
   const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [profilePict, setProfilePict] = useState<string | null>(null);
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [loadingPassword, setLoadingPassword] = useState(false);
 
@@ -37,13 +40,21 @@ export default function ProfileSettingForm() {
           first_name: user.first_name,
           last_name: user.last_name,
         });
-        setProfilePict(user.profile_pict || null); // set foto profil dari backend
+        setProfilePict(user.profile_pict || null);
       })
       .catch((err) => {
         console.error(err);
         Swal.fire("Error", "Failed to load user data", "error");
       });
   }, []);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = e.target.files?.[0] || null;
+    setFile(selected);
+    if (selected) {
+      setPreview(URL.createObjectURL(selected));
+    }
+  };
 
   const handleUpdateProfile = async (values: any) => {
     const token = getToken();
@@ -66,17 +77,13 @@ export default function ProfileSettingForm() {
           },
         }
       );
-      Swal.fire("Success", "Profile updated successfully", "success");
 
-      // Perbarui foto profil yang ditampilkan setelah update
+      Swal.fire("Success", "Profile updated successfully", "success");
       setProfilePict(res.data.data.profile_pict || null);
+      setPreview(null);
     } catch (err: any) {
       console.error(err);
-      Swal.fire(
-        "Error",
-        err.response?.data?.message || "Update failed",
-        "error"
-      );
+      Swal.fire("Error", err.response?.data?.message || "Update failed", "error");
     } finally {
       setLoadingProfile(false);
     }
@@ -95,20 +102,13 @@ export default function ProfileSettingForm() {
           new_password: values.new_password,
         },
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       Swal.fire("Success", "Password changed successfully", "success");
       resetForm();
     } catch (err: any) {
-      console.error(err);
-      Swal.fire(
-        "Error",
-        err.response?.data?.message || "Password change failed",
-        "error"
-      );
+      Swal.fire("Error", err.response?.data?.message || "Password change failed", "error");
     } finally {
       setLoadingPassword(false);
     }
@@ -116,16 +116,16 @@ export default function ProfileSettingForm() {
 
   return (
     <div className="space-y-10 bg-white p-6 rounded shadow">
-      {/* Profile Update Form */}
+      {/* Profile Update */}
       <div>
         <h2 className="text-2xl font-bold mb-4">Profile Settings</h2>
 
-        {profilePict && (
+        {(preview || profilePict) && (
           <div className="mb-4">
             <img
-              src={`${process.env.NEXT_PUBLIC_BASE_API_URL}${profilePict}`}
+              src={preview || profilePict || "/no-photo.jpg"}
               alt="Profile"
-              className="w-32 h-32 rounded-full object-cover"
+              className="w-32 h-32 rounded-full object-cover border"
             />
           </div>
         )}
@@ -140,38 +140,22 @@ export default function ProfileSettingForm() {
             <Form className="space-y-4">
               <div>
                 <label className="block text-sm font-medium">First Name</label>
-                <Field
-                  name="first_name"
-                  className="mt-1 p-2 border rounded w-full"
-                />
-                <ErrorMessage
-                  name="first_name"
-                  component="div"
-                  className="text-red-500 text-sm"
-                />
+                <Field name="first_name" className="mt-1 p-2 border rounded w-full" />
+                <ErrorMessage name="first_name" component="div" className="text-red-500 text-sm" />
               </div>
 
               <div>
                 <label className="block text-sm font-medium">Last Name</label>
-                <Field
-                  name="last_name"
-                  className="mt-1 p-2 border rounded w-full"
-                />
-                <ErrorMessage
-                  name="last_name"
-                  component="div"
-                  className="text-red-500 text-sm"
-                />
+                <Field name="last_name" className="mt-1 p-2 border rounded w-full" />
+                <ErrorMessage name="last_name" component="div" className="text-red-500 text-sm" />
               </div>
 
               <div>
-                <label className="block text-sm font-medium">
-                  Profile Picture
-                </label>
+                <label className="block text-sm font-medium">Profile Picture</label>
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={(e) => setFile(e.target.files?.[0] || null)}
+                  onChange={handleFileChange}
                   className="mt-1"
                 />
               </div>
@@ -188,7 +172,7 @@ export default function ProfileSettingForm() {
         </Formik>
       </div>
 
-      {/* Change Password Form */}
+      {/* Change Password */}
       <div>
         <h2 className="text-2xl font-bold mb-4">Change Password</h2>
         <Formik
@@ -204,11 +188,7 @@ export default function ProfileSettingForm() {
                 name="old_password"
                 className="mt-1 p-2 border rounded w-full"
               />
-              <ErrorMessage
-                name="old_password"
-                component="div"
-                className="text-red-500 text-sm"
-              />
+              <ErrorMessage name="old_password" component="div" className="text-red-500 text-sm" />
             </div>
 
             <div>
@@ -218,11 +198,7 @@ export default function ProfileSettingForm() {
                 name="new_password"
                 className="mt-1 p-2 border rounded w-full"
               />
-              <ErrorMessage
-                name="new_password"
-                component="div"
-                className="text-red-500 text-sm"
-              />
+              <ErrorMessage name="new_password" component="div" className="text-red-500 text-sm" />
             </div>
 
             <button

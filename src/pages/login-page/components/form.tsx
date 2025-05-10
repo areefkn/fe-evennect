@@ -48,8 +48,12 @@ export default function LoginForm() {
         confirmButtonText: "Cool",
         timer: 1000,
       }).then(() => {
-        // Arahkan setelah popup sukses ditutup
-        router.push("/"); // atau "/dashboard"
+      const role = data.data.user.role;
+      if (role === "ORGANIZER") {
+        router.push("/dashboard");
+      } else {
+        router.push("/");
+        }
       });
     } catch (err: any) {
       Swal.fire({

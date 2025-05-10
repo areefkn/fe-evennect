@@ -20,6 +20,7 @@ const initialState: IAuth = {
     first_name: "",
     last_name: "",
     role: "",
+    avatar: "",
   },
   isLogin: false,
 };
@@ -33,13 +34,19 @@ export const authSlice = createSlice({
       state.user.first_name = action.payload.user.first_name;
       state.user.last_name = action.payload.user.last_name;
       state.user.role = action.payload.user.role;
+      state.user.avatar = action.payload.user.avatar ?? "";
       state.isLogin = true;
     },
     onLogout: (state: IAuth) => {
-      state.user.email = "";
-      state.user.first_name = "";
-      state.user.last_name = "";
+      state.user = {
+        email: "",
+        first_name: "",
+        last_name: "",
+        role: "",
+        avatar: "",
+      };
       state.isLogin = false;
+      deleteCookie("access_token"); // opsional, untuk jaga-jaga
     },
   },
 });

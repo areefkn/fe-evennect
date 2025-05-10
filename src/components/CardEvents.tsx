@@ -47,7 +47,7 @@ const CardEvents: React.FC<ICardEvents> = ({
             >
             <div className="relative w-full  aspect-[2/1] overflow-hidden rounded-t-lg">
                 <Image
-                src={imageUrl}
+                src={imageUrl?.trim() ? imageUrl : "/placeholder.jpg"}
                 alt={title}
                 fill
                 className="object-cover"
@@ -63,7 +63,7 @@ const CardEvents: React.FC<ICardEvents> = ({
             <div className="flex items-center mt-3 gap-2">
                 <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden relative">
                 <Image
-                    src={organizerLogo || '/no-photo.jpg'}
+                    src={organizerLogo?.trim() ? organizerLogo : "/no-photo.jpg"}
                     alt="Organizer Logo"
                     fill
                     className="object-cover"
