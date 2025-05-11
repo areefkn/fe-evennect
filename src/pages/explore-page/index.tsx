@@ -14,16 +14,17 @@ export default function ExploreEvents() {
 
   useEffect(() => {
     const fetchEvents = async () => {
-      setLoading(true);
       try {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_API_URL}/events/explore`, {
-          params: { category, location },
-        });
-
-        console.log('🟢 API RAW DATA:', res.data);
-        setEvents(res.data.data);
+        setLoading(true);
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_BASE_API_URL}/events/explore`,
+          {
+            params: { category, location },
+          }
+        );
+        setEvents(res.data.data || []);
       } catch (err) {
-        console.error('🔥 ERROR FETCHING:', err);
+        console.error('🔥 ERROR FETCHING EVENTS:', err);
         setEvents([]);
       } finally {
         setLoading(false);
@@ -43,13 +44,13 @@ export default function ExploreEvents() {
       />
 
       {loading ? (
-        <p>Loading...</p>
+        <p className="text-center mt-8 text-gray-500">Loading...</p>
       ) : events.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
           {events.map((item) => (
             <CardEvents
               key={item.id}
-              title={item.name ?? 'Tanpa Judul'}
+              title={item.name || 'Tanpa Judul'}
               date={new Date(item.start_date).toLocaleDateString('id-ID', {
                 day: '2-digit',
                 month: 'short',
@@ -57,15 +58,15 @@ export default function ExploreEvents() {
               })}
               price={item.ticket_types?.[0]?.price ?? 0}
               imageUrl={item.image?.trim() || '/placeholder.jpg'}
-              organizerName={`${item.organizer?.first_name || ''} ${item.organizer?.last_name || ''}`.trim()}
+              organizerName={`${item.organizer?.first_name ?? ''} ${item.organizer?.last_name ?? ''}`.trim()}
               organizerLogo={item.organizer?.avatar?.trim() || '/no-photo.jpg'}
-              href={`/events/${item.id}`}
+              href={`/detail/${item.id}`}
             />
           ))}
         </div>
       ) : (
         <div className="text-center mt-10 text-gray-500">
-          <p className="text-lg font-semibold">Ups, tidak ada event ditemukan 😥</p>
+          <p className="text-lg font-semibold">Ups, tidak ada event ditemukan</p>
           <p className="text-sm">Coba gunakan filter lain atau periksa ejaannya.</p>
         </div>
       )}

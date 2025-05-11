@@ -51,7 +51,7 @@ const SeachMain = () => {
             price={event.ticket_types?.[0]?.price || 0}
             organizerLogo={event.organizer?.avatar || '/no-photo.jpg'}
             organizerName={`${event.organizer?.first_name || ''} ${event.organizer?.last_name || ''}`}
-            href={`/events/${event.id}`}
+            href={`/detail/${event.id}`}
             />
         ))}
         </div>
