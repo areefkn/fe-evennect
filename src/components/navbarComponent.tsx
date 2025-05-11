@@ -39,13 +39,13 @@ export default function Navbar() {
 
   const guestMenu = [
     { name: "Home", href: "/" },
-    { name: "Event", href: "/all-events" },
+    { name: "Explore", href: "/explore" },
     { name: "About", href: "/about" },
   ];
 
   const customerMenu = [
     { name: "Home", href: "/" },
-    { name: "Event", href: "/all-events" },
+    { name: "Explore", href: "/explore" },
   ];
 
   const organizerMenu = [
