@@ -28,7 +28,7 @@ const SearchInput = () => {
               handleSearch();
             }
           }}
-          placeholder="Cari event..."
+          placeholder="Search event..."
           className="w-full py-2 pl-4 pr-20 h-10 rounded-md border-2 border-gray-50 focus:outline-none focus:ring-1 focus:ring-purple-500"
           autoComplete="off"
         />
