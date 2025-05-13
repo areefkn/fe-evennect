@@ -39,15 +39,13 @@ export default function TransactionAction({ id, disabled, onReload }: Props) {
   return (
     <div className="flex gap-2 justify-center">
       <button
-        className="text-green-600 hover:underline disabled:opacity-50"
-        disabled={disabled}
+        className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition"
         onClick={() => handleAction("approve")}
       >
         Approve
       </button>
       <button
-        className="text-red-600 hover:underline disabled:opacity-50"
-        disabled={disabled}
+        className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition"
         onClick={() => handleAction("reject")}
       >
         Reject

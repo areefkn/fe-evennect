@@ -59,7 +59,7 @@ export default function EditEventForm({
       validationSchema={editEventSchema}
       onSubmit={handleSubmit}
     >
-      <Form className="space-y-4">
+      <Form className="space-y-6 p-6 bg-white rounded-xl shadow-lg border border-gray-200">
         <div>
           <label className="block text-sm font-medium mb-1">Event Name</label>
           <Field name="name" className="w-full border rounded p-2" />

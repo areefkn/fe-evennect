@@ -57,30 +57,41 @@ export default function MyEvent() {
   const handleEditModalClose = () => setSelectedEditEvent(null);
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">My Events</h1>
+    <>
+      <h1 className="text-3xl font-semibold text-gray-800 mb-8">My Events</h1>
 
-      {/* Tambahkan Form Create Event */}
       <div className="mb-8">
         <CreateEventModal />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {events.map((event) => (
           <div
             key={event.id}
-            className="relative border p-4 rounded-lg shadow bg-white"
+            className="relative border rounded-lg shadow-lg bg-white p-6 hover:shadow-xl transition-all"
           >
-            <h2 className="text-xl font-semibold mb-2">{event.name}</h2>
-            <p>Category: {event.category}</p>
-            <p>Location: {event.location}</p>
-            <p>Available Seats: {event.available_seats}</p>
-            <p>
-              Date: {new Date(event.start_date).toLocaleDateString()} -{" "}
-              {new Date(event.end_date).toLocaleDateString()}
-            </p>
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              {event.name}
+            </h2>
+            <div className="space-y-2 text-gray-600">
+              <p>
+                <span className="font-medium">Category:</span> {event.category}
+              </p>
+              <p>
+                <span className="font-medium">Location:</span> {event.location}
+              </p>
+              <p>
+                <span className="font-medium">Available Seats:</span>{" "}
+                {event.available_seats}
+              </p>
+              <p>
+                <span className="font-medium">Date:</span>{" "}
+                {new Date(event.start_date).toLocaleDateString()} -{" "}
+                {new Date(event.end_date).toLocaleDateString()}
+              </p>
+            </div>
 
-            <div className="mt-4 flex gap-3">
+            <div className="mt-4 flex gap-4">
               <button
                 onClick={() => setSelectedTicketEventId(event.id)}
                 className="text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline transition"
@@ -98,7 +109,7 @@ export default function MyEvent() {
             {/* Modal Add Ticket */}
             {selectedTicketEventId === event.id && (
               <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                <div className="bg-white p-6 rounded shadow-lg w-full max-w-md relative">
+                <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
                   <button
                     onClick={handleTicketModalClose}
                     className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
@@ -120,7 +131,7 @@ export default function MyEvent() {
       {/* Modal Edit Event */}
       {selectedEditEvent && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded shadow-lg w-full max-w-md relative">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
             <button
               onClick={handleEditModalClose}
               className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
@@ -145,6 +156,6 @@ export default function MyEvent() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
