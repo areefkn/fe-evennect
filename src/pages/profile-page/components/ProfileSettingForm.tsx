@@ -7,7 +7,6 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { changeNameSchema } from "../schema/changeNameSchema";
 import { changePasswordSchema } from "../schema/changePasswordSchema";
 
-
 export default function ProfileSettingForm() {
   const [initialNameValues, setInitialNameValues] = useState({
     first_name: "",
@@ -83,7 +82,11 @@ export default function ProfileSettingForm() {
       setPreview(null);
     } catch (err: any) {
       console.error(err);
-      Swal.fire("Error", err.response?.data?.message || "Update failed", "error");
+      Swal.fire(
+        "Error",
+        err.response?.data?.message || "Update failed",
+        "error"
+      );
     } finally {
       setLoadingProfile(false);
     }
@@ -108,73 +111,104 @@ export default function ProfileSettingForm() {
       Swal.fire("Success", "Password changed successfully", "success");
       resetForm();
     } catch (err: any) {
-      Swal.fire("Error", err.response?.data?.message || "Password change failed", "error");
+      Swal.fire(
+        "Error",
+        err.response?.data?.message || "Password change failed",
+        "error"
+      );
     } finally {
       setLoadingPassword(false);
     }
   };
 
   return (
-    <div className="space-y-10 bg-white p-6 rounded shadow">
-      {/* Profile Update */}
+    <div className="bg-white rounded-lg shadow-md p-6 sm:p-10 max-w-4xl mx-auto mt-8 space-y-10">
+      {/* Profile Update Section */}
       <div>
-        <h2 className="text-2xl font-bold mb-4">Profile Settings</h2>
+        <h2 className="text-2xl font-semibold mb-6 text-gray-800">
+          Update Profile
+        </h2>
 
-        {(preview || profilePict) && (
-          <div className="mb-4">
-            <img
-              src={preview || profilePict || "/no-photo.jpg"}
-              alt="Profile"
-              className="w-32 h-32 rounded-full object-cover border"
-            />
-          </div>
-        )}
-
-        <Formik
-          enableReinitialize
-          initialValues={initialNameValues}
-          validationSchema={changeNameSchema}
-          onSubmit={handleUpdateProfile}
-        >
-          {() => (
-            <Form className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium">First Name</label>
-                <Field name="first_name" className="mt-1 p-2 border rounded w-full" />
-                <ErrorMessage name="first_name" component="div" className="text-red-500 text-sm" />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium">Last Name</label>
-                <Field name="last_name" className="mt-1 p-2 border rounded w-full" />
-                <ErrorMessage name="last_name" component="div" className="text-red-500 text-sm" />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium">Profile Picture</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="mt-1"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={loadingProfile}
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-              >
-                {loadingProfile ? "Updating..." : "Update Profile"}
-              </button>
-            </Form>
+        <div className="flex flex-col items-center sm:flex-row sm:items-start sm:gap-8">
+          {(preview || profilePict) && (
+            <div className="mb-4 sm:mb-0">
+              <img
+                src={preview || profilePict || "/no-photo.jpg"}
+                alt="Profile"
+                className="w-32 h-32 rounded-full object-cover border border-gray-300"
+              />
+            </div>
           )}
-        </Formik>
+
+          <Formik
+            enableReinitialize
+            initialValues={initialNameValues}
+            validationSchema={changeNameSchema}
+            onSubmit={handleUpdateProfile}
+          >
+            {() => (
+              <Form className="flex-1 w-full space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    First Name
+                  </label>
+                  <Field
+                    name="first_name"
+                    className="mt-1 p-2 border border-gray-300 rounded w-full focus:ring-2 focus:ring-blue-500 outline-none"
+                  />
+                  <ErrorMessage
+                    name="first_name"
+                    component="div"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Last Name
+                  </label>
+                  <Field
+                    name="last_name"
+                    className="mt-1 p-2 border border-gray-300 rounded w-full focus:ring-2 focus:ring-blue-500 outline-none"
+                  />
+                  <ErrorMessage
+                    name="last_name"
+                    component="div"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Profile Picture
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="mt-1 block w-full text-sm text-gray-600"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loadingProfile}
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2 rounded-md transition disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loadingProfile ? "Updating..." : "Update Profile"}
+                </button>
+              </Form>
+            )}
+          </Formik>
+        </div>
       </div>
 
-      {/* Change Password */}
+      {/* Change Password Section */}
       <div>
-        <h2 className="text-2xl font-bold mb-4">Change Password</h2>
+        <h2 className="text-2xl font-semibold mb-6 text-gray-800">
+          Change Password
+        </h2>
+
         <Formik
           initialValues={{ old_password: "", new_password: "" }}
           validationSchema={changePasswordSchema}
@@ -182,29 +216,41 @@ export default function ProfileSettingForm() {
         >
           <Form className="space-y-4">
             <div>
-              <label className="block text-sm font-medium">Old Password</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Old Password
+              </label>
               <Field
                 type="password"
                 name="old_password"
-                className="mt-1 p-2 border rounded w-full"
+                className="mt-1 p-2 border border-gray-300 rounded w-full focus:ring-2 focus:ring-green-500 outline-none"
               />
-              <ErrorMessage name="old_password" component="div" className="text-red-500 text-sm" />
+              <ErrorMessage
+                name="old_password"
+                component="div"
+                className="text-red-500 text-sm"
+              />
             </div>
 
             <div>
-              <label className="block text-sm font-medium">New Password</label>
+              <label className="block text-sm font-medium text-gray-700">
+                New Password
+              </label>
               <Field
                 type="password"
                 name="new_password"
-                className="mt-1 p-2 border rounded w-full"
+                className="mt-1 p-2 border border-gray-300 rounded w-full focus:ring-2 focus:ring-green-500 outline-none"
               />
-              <ErrorMessage name="new_password" component="div" className="text-red-500 text-sm" />
+              <ErrorMessage
+                name="new_password"
+                component="div"
+                className="text-red-500 text-sm"
+              />
             </div>
 
             <button
               type="submit"
               disabled={loadingPassword}
-              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50"
+              className="bg-green-600 hover:bg-green-700 text-white font-medium px-5 py-2 rounded-md transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loadingPassword ? "Changing..." : "Change Password"}
             </button>

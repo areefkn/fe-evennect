@@ -34,9 +34,13 @@ export default function OrganizerTransactions() {
   }, []);
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
-      <h1 className="text-xl font-bold mb-4">All Transactions</h1>
-      <TransactionTable data={transactions} onReload={fetchTransactions} />
+    <div className="p-6 max-w-6xl mx-auto">
+      <h1 className="text-3xl font-bold text-gray-800 mb-6">
+        All Transactions
+      </h1>
+      <div className="bg-white p-4 rounded-xl shadow-md overflow-x-auto">
+        <TransactionTable data={transactions} onReload={fetchTransactions} />
+      </div>
     </div>
   );
 }
