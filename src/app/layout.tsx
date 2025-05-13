@@ -37,7 +37,7 @@ export default function RootLayout({
         <StoreProvider>
           <Auth>
             <Navbar/>
-            <div className="bg-blue-50 pt-10">{children}</div>
+            <div className="bg-slate-100 pt-2">{children}</div>
           </Auth>
         </StoreProvider>
       </body>

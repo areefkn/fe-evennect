@@ -3,7 +3,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import CardEvents from '@/components/CardEvents';
-import EventFilter from './component/eventFilter';
+import EventFilter from './components/eventFilter';
 import { IEvent } from '../home-page/component/type';
 
 export default function ExploreEvents() {
