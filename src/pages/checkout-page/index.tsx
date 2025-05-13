@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
 import Image from 'next/image';
 import { ICheckout } from './components/types';
+import { getCookie } from "cookies-next";
 
 export default function CheckoutPage() {
   const { id } = useParams() as { id: string };
@@ -15,6 +16,7 @@ export default function CheckoutPage() {
   const [voucherCode, setVoucherCode] = useState('');
   const [voucherDiscount, setVoucherDiscount] = useState(0);
   const [agreed, setAgreed] = useState(false);
+  const access_token = getCookie("access_token") as string;
 
   useEffect(() => {
     if (!id) return;
@@ -25,17 +27,23 @@ export default function CheckoutPage() {
       .finally(() => setLoading(false));
   }, [id]);
 
+  const [voucherId, setVoucherId] = useState<string | null>(null);
+
   const applyVoucher = async () => {
     if (!voucherCode) return;
     try {
       const res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_API_URL}/vouchers/${voucherCode}`);
       setVoucherDiscount(res.data.discount);
+      setVoucherId(res.data.id); // simpan ID voucher
       alert('Voucher berhasil digunakan!');
     } catch {
       setVoucherDiscount(0);
+      setVoucherId(null);
       alert('Voucher tidak valid.');
     }
   };
+
+  
 
   const handleCheckout = async () => {
     if (!event) return;
@@ -43,8 +51,14 @@ export default function CheckoutPage() {
       const res = await axios.post(`${process.env.NEXT_PUBLIC_BASE_API_URL}/transactions`, {
         ticket_type_id: event.ticket_types[0].id,
         used_points: usedPoints,
-        voucher_id: voucherCode || undefined,
-      });
+        voucher_id: typeof voucherId === 'string' ? voucherId : undefined
+      },
+      { 
+        headers:{
+      Authorization: 'Bearer ' + access_token
+      }
+    }
+    );
       router.push(`/payment-proof/${res.data.data.id}`);
     } catch (err: any) {
       alert(err.response?.data?.message || 'Checkout gagal');
@@ -62,7 +76,7 @@ export default function CheckoutPage() {
   const total = Math.max(ticketPrice - voucherDiscount - pointsUsed, 0);
 
   return (
-    <div className="max-w-6xl mx-auto p-8 grid lg:grid-cols-3 gap-6">
+    <div className="max-w-6xl mx-auto p-4 grid lg:grid-cols-3 gap-6">
       <div className="lg:col-span-2 bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-bold mb-4">Detail Pemesanan</h2>
         <div className="flex gap-4">
