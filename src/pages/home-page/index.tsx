@@ -14,7 +14,7 @@ export default function HomeMain() {
       try {
         const resAll = await axios.get<IApiResponse<IEvent[]>>(`${process.env.NEXT_PUBLIC_BASE_API_URL}/events/show`);
         const resFeatured = await axios.get<IApiResponse<IEvent[]>>(`${process.env.NEXT_PUBLIC_BASE_API_URL}/events/show?featured=true`);
-        console.log("✅ resAll.data:", resAll.data);   //debug
+        // console.log("✅ resAll.data:", resAll.data);   //debug
         setUpcomingEvents(resAll.data.data.filter((e: IEvent) => !e.ticket_types || e.ticket_types.length === 0));
         setFeaturedEvents(resFeatured.data.data);
       } catch (error) {
