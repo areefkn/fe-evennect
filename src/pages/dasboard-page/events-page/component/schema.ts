@@ -13,6 +13,7 @@ export const createEventSchema = Yup.object().shape({
   available_seats: Yup.number()
     .required("Required")
     .min(1, "Must be at least 1"),
+  image: Yup.mixed().nullable(),
 });
 
 export const editEventSchema = Yup.object({

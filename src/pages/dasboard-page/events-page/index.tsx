@@ -8,6 +8,7 @@ import EditEventForm from "./component/editEventForm";
 interface Event {
   id: string;
   name: string;
+  image?: string;
   category: string;
   location: string;
   available_seats: number;
@@ -61,15 +62,22 @@ export default function MyEvent() {
       <h1 className="text-3xl font-semibold text-gray-800 mb-8">My Events</h1>
 
       <div className="mb-8">
-        <CreateEventModal />
+        <CreateEventModal onSuccess={fetchEvents} />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {events.map((event) => (
           <div
             key={event.id}
-            className="relative border rounded-lg shadow-lg bg-white p-6 hover:shadow-xl transition-all"
+            className="border border-gray-200 p-6 rounded-xl bg-white shadow-sm hover:shadow-md transition-all"
           >
+            {event.image && (
+              <img
+                src={process.env.NEXT_PUBLIC_BASE_API_URL + event.image}
+                alt={event.name}
+                className="w-full h-48 object-cover rounded mb-4"
+              />
+            )}
             <h2 className="text-xl font-semibold text-gray-800 mb-4">
               {event.name}
             </h2>
@@ -146,6 +154,7 @@ export default function MyEvent() {
                 location: selectedEditEvent.location,
                 start_date: selectedEditEvent.start_date,
                 end_date: selectedEditEvent.end_date,
+                image: null,
               }}
               onClose={handleEditModalClose}
               onSuccess={() => {

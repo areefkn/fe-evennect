@@ -7,6 +7,7 @@ export interface CreateEventPayload {
   start_date: string;
   end_date: string;
   available_seats: number;
+  image: File | null;
 }
 
 export interface EditEventFormValues {
@@ -14,4 +15,5 @@ export interface EditEventFormValues {
   location: string;
   start_date: string;
   end_date: string;
+  image: File | null;
 }

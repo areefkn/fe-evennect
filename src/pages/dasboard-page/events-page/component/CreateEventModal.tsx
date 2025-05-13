@@ -3,11 +3,12 @@
 import { useState } from "react";
 import CreateEventForm from "./form";
 
-const CreateEventModal = () => {
+const CreateEventModal = ({ onSuccess }: { onSuccess: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSuccess = () => {
     setIsOpen(false);
+    onSuccess();
     // optionally refresh event list here
   };
 
