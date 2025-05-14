@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import AttendeeModal from "./components/AttendeeModal";
 
 interface Attendee {
   event_id: string;
@@ -87,19 +88,12 @@ export default function AttendeePage() {
               </button>
             </div>
 
-            {selectedEvent.attendees.length === 0 ? (
-              <p className="text-gray-500">No attendees yet.</p>
-            ) : (
-              <ul className="space-y-2">
-                {selectedEvent.attendees.map((user, index) => (
-                  <li
-                    key={index}
-                    className="px-3 py-2 bg-gray-50 rounded-md shadow-sm text-gray-700"
-                  >
-                    {user.first_name} {user.last_name}
-                  </li>
-                ))}
-              </ul>
+            {selectedEvent && (
+              <AttendeeModal
+                eventName={selectedEvent.event_name}
+                attendees={selectedEvent.attendees}
+                onClose={() => setSelectedEvent(null)}
+              />
             )}
           </div>
         </div>

@@ -1,16 +1,54 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { jwtDecode } from "jwt-decode";
 import MyEvent from "./events-page";
 import OrganizerTransactions from "./transactions-page";
 import AttendeePage from "./attendee-page";
 import StatisticPage from "./detil-page";
 import StatisticsChart from "./statistics-page";
 
+interface TokenPayload {
+  role: string;
+  exp: number; // optional, kalau mau check exp
+}
 export default function DashboardPage() {
+  const router = useRouter();
+  const [authorized, setAuthorized] = useState(false);
   const [activeTab, setActiveTab] = useState<
     "dashboard" | "event" | "transaction" | "statistics" | "attendee"
   >("dashboard");
+
+  const getToken = () =>
+    document.cookie
+      .split("; ")
+      .find((c) => c.startsWith("access_token="))
+      ?.split("=")[1];
+
+  useEffect(() => {
+    const token = getToken();
+
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+
+    try {
+      const decoded = jwtDecode<TokenPayload>(token);
+
+      if (decoded.role !== "ORGANIZER") {
+        router.push("/");
+        return;
+      }
+
+      setAuthorized(true);
+    } catch (err) {
+      router.push("/login");
+    }
+  }, []);
+
+  if (!authorized) return null;
 
   const menuItems = [
     { key: "dashboard", label: "Dashboard" },

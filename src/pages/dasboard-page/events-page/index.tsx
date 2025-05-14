@@ -16,6 +16,13 @@ interface Event {
   end_date: string;
 }
 
+interface TicketType {
+  id: string;
+  name: string;
+  price: number;
+  quota: number;
+}
+
 export default function MyEvent() {
   const [events, setEvents] = useState<Event[]>([]);
   const [selectedTicketEventId, setSelectedTicketEventId] = useState<
@@ -24,6 +31,9 @@ export default function MyEvent() {
   const [selectedEditEvent, setSelectedEditEvent] = useState<Event | null>(
     null
   );
+  const [ticketTypesMap, setTicketTypesMap] = useState<
+    Record<string, TicketType[]>
+  >({});
 
   const getToken = () =>
     document.cookie
@@ -39,9 +49,7 @@ export default function MyEvent() {
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/events/me`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       setEvents(Array.isArray(res.data) ? res.data : res.data.data);
@@ -50,9 +58,38 @@ export default function MyEvent() {
     }
   };
 
+  const fetchTicketTypes = async (eventId: string) => {
+    const token = getToken();
+    if (!token) return;
+
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/ticket-types?event_id=${eventId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const data = Array.isArray(res.data) ? res.data : res.data.data;
+      setTicketTypesMap((prev) => ({ ...prev, [eventId]: data }));
+    } catch (error) {
+      console.error(
+        `Failed to fetch ticket types for event ${eventId}:`,
+        error
+      );
+    }
+  };
+
   useEffect(() => {
     fetchEvents();
   }, []);
+
+  useEffect(() => {
+    events.forEach((event) => {
+      fetchTicketTypes(event.id);
+    });
+  }, [events]);
 
   const handleTicketModalClose = () => setSelectedTicketEventId(null);
   const handleEditModalClose = () => setSelectedEditEvent(null);
@@ -99,16 +136,40 @@ export default function MyEvent() {
               </p>
             </div>
 
+            {/* Daftar Ticket Types */}
+            <div className="mt-4">
+              <h4 className="font-semibold text-gray-700 text-sm mb-1">
+                Tickets:
+              </h4>
+              {ticketTypesMap[event.id] &&
+              ticketTypesMap[event.id].length > 0 ? (
+                <ul className="text-sm text-gray-600 space-y-1">
+                  {ticketTypesMap[event.id].map((ticket) => (
+                    <li
+                      key={ticket.id}
+                      className="border p-2 rounded bg-gray-50"
+                    >
+                      🎫 <strong>{ticket.name}</strong> — Rp
+                      {ticket.price.toLocaleString()} (Quota: {ticket.quota})
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm italic text-gray-400">No tickets yet.</p>
+              )}
+            </div>
+
+            {/* Action Buttons */}
             <div className="mt-4 flex gap-4">
               <button
                 onClick={() => setSelectedTicketEventId(event.id)}
-                className="text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline transition"
+                className="text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline"
               >
                 + Add Ticket
               </button>
               <button
                 onClick={() => setSelectedEditEvent(event)}
-                className="text-sm font-medium text-yellow-600 hover:text-yellow-700 hover:underline transition"
+                className="text-sm font-medium text-yellow-600 hover:text-yellow-700 hover:underline"
               >
                 ✎ Edit Event
               </button>
@@ -127,7 +188,10 @@ export default function MyEvent() {
                   <h3 className="text-lg font-bold mb-4">Create Ticket Type</h3>
                   <CreateTicketTypeForm
                     eventId={event.id}
-                    onSuccess={handleTicketModalClose}
+                    onSuccess={() => {
+                      handleTicketModalClose();
+                      fetchTicketTypes(event.id); // refresh ticket types
+                    }}
                   />
                 </div>
               </div>
