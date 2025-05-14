@@ -4,6 +4,7 @@ import axios from "axios";
 import CreateEventModal from "./component/CreateEventModal";
 import CreateTicketTypeForm from "./[id]/tickets-page/component/form";
 import EditEventForm from "./component/editEventForm";
+import CreateVoucherForm from "./component/CreateVoucherForm";
 
 interface Event {
   id: string;
@@ -23,6 +24,14 @@ interface TicketType {
   quota: number;
 }
 
+interface Voucher {
+  id: string;
+  code: string;
+  discount: number;
+  start_date: string;
+  end_date: string;
+}
+
 export default function MyEvent() {
   const [events, setEvents] = useState<Event[]>([]);
   const [selectedTicketEventId, setSelectedTicketEventId] = useState<
@@ -34,6 +43,10 @@ export default function MyEvent() {
   const [ticketTypesMap, setTicketTypesMap] = useState<
     Record<string, TicketType[]>
   >({});
+  const [voucherMap, setVoucherMap] = useState<Record<string, Voucher[]>>({});
+  const [selectedVoucherEventId, setSelectedVoucherEventId] = useState<
+    string | null
+  >(null);
 
   const getToken = () =>
     document.cookie
@@ -81,6 +94,24 @@ export default function MyEvent() {
     }
   };
 
+  const fetchVouchers = async (eventId: string) => {
+    const token = getToken();
+    if (!token) return;
+
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/vouchers/by-event?event_id=${eventId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      const data = Array.isArray(res.data) ? res.data : res.data.data;
+      setVoucherMap((prev) => ({ ...prev, [eventId]: data }));
+    } catch (error) {
+      console.error(`Failed to fetch vouchers for event ${eventId}:`, error);
+    }
+  };
+
   useEffect(() => {
     fetchEvents();
   }, []);
@@ -88,11 +119,13 @@ export default function MyEvent() {
   useEffect(() => {
     events.forEach((event) => {
       fetchTicketTypes(event.id);
+      fetchVouchers(event.id);
     });
   }, [events]);
 
   const handleTicketModalClose = () => setSelectedTicketEventId(null);
   const handleEditModalClose = () => setSelectedEditEvent(null);
+  const handleVoucherModalClose = () => setSelectedVoucherEventId(null);
 
   return (
     <div className="p-6">
@@ -158,6 +191,32 @@ export default function MyEvent() {
                 <p className="text-sm italic text-gray-400">No tickets yet.</p>
               )}
             </div>
+            {/* Voucher Section */}
+            <div className="mt-4">
+              <h4 className="font-semibold text-gray-700 text-sm mb-1">
+                Vouchers:
+              </h4>
+              {voucherMap[event.id] && voucherMap[event.id].length > 0 ? (
+                <ul className="text-sm text-gray-600 space-y-1">
+                  {voucherMap[event.id].map((voucher) => (
+                    <li
+                      key={voucher.id}
+                      className="border p-2 rounded bg-green-50"
+                    >
+                      🏷️ <strong>{voucher.code}</strong> — {voucher.discount}{" "}
+                      off
+                      <br />
+                      Valid: {new Date(
+                        voucher.start_date
+                      ).toLocaleDateString()}{" "}
+                      - {new Date(voucher.end_date).toLocaleDateString()}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm italic text-gray-400">No vouchers yet.</p>
+              )}
+            </div>
 
             {/* Action Buttons */}
             <div className="mt-4 flex gap-4">
@@ -166,6 +225,12 @@ export default function MyEvent() {
                 className="text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline"
               >
                 + Add Ticket
+              </button>
+              <button
+                onClick={() => setSelectedVoucherEventId(event.id)}
+                className="text-sm font-medium text-green-600 hover:text-green-700 hover:underline"
+              >
+                + Add Voucher
               </button>
               <button
                 onClick={() => setSelectedEditEvent(event)}
@@ -191,6 +256,28 @@ export default function MyEvent() {
                     onSuccess={() => {
                       handleTicketModalClose();
                       fetchTicketTypes(event.id); // refresh ticket types
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Modal Create Voucher */}
+            {selectedVoucherEventId === event.id && (
+              <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
+                  <button
+                    onClick={handleVoucherModalClose}
+                    className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                  >
+                    ✕
+                  </button>
+                  <h3 className="text-lg font-bold mb-4">Create Voucher</h3>
+                  <CreateVoucherForm
+                    eventId={event.id}
+                    onSuccess={() => {
+                      handleVoucherModalClose();
+                      // Optional: fetch vouchers again
                     }}
                   />
                 </div>
