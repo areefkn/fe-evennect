@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["assets.loket.com"],
+    domains: ["assets.loket.com", "localhost"],
   },
   /* config options here */
 };

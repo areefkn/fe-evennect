@@ -39,7 +39,9 @@ export default function ProfileSettingForm() {
           first_name: user.first_name,
           last_name: user.last_name,
         });
-        setProfilePict(user.profile_pict || null);
+        setProfilePict(
+          `${process.env.NEXT_PUBLIC_BASE_API_URL}${user.profile_pict}`
+        );
       })
       .catch((err) => {
         console.error(err);

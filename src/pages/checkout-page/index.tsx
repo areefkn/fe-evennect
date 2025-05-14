@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import axios from 'axios';
-import Image from 'next/image';
-import { ICheckout } from './components/types';
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import axios from "axios";
+import Image from "next/image";
+import { ICheckout } from "./components/types";
 
 export default function CheckoutPage() {
   const { id } = useParams() as { id: string };
@@ -12,7 +12,7 @@ export default function CheckoutPage() {
   const [event, setEvent] = useState<ICheckout | null>(null);
   const [loading, setLoading] = useState(true);
   const [usedPoints, setUsedPoints] = useState(0);
-  const [voucherCode, setVoucherCode] = useState('');
+  const [voucherCode, setVoucherCode] = useState("");
   const [voucherDiscount, setVoucherDiscount] = useState(0);
   const [agreed, setAgreed] = useState(false);
 
@@ -28,30 +28,36 @@ export default function CheckoutPage() {
   const applyVoucher = async () => {
     if (!voucherCode) return;
     try {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_API_URL}/vouchers/${voucherCode}`);
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/vouchers/${voucherCode}`
+      );
       setVoucherDiscount(res.data.discount);
-      alert('Voucher berhasil digunakan!');
+      alert("Voucher berhasil digunakan!");
     } catch {
       setVoucherDiscount(0);
-      alert('Voucher tidak valid.');
+      alert("Voucher tidak valid.");
     }
   };
 
   const handleCheckout = async () => {
     if (!event) return;
     try {
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_BASE_API_URL}/transactions`, {
-        ticket_type_id: event.ticket_types[0].id,
-        used_points: usedPoints,
-        voucher_id: voucherCode || undefined,
-      });
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/transactions`,
+        {
+          ticket_type_id: event.ticket_types[0].id,
+          used_points: usedPoints,
+          voucher_id: voucherCode || undefined,
+        }
+      );
       router.push(`/payment-proof/${res.data.data.id}`);
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Checkout gagal');
+      alert(err.response?.data?.message || "Checkout gagal");
     }
   };
 
-  const formatIDR = (amount: number) => amount.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
+  const formatIDR = (amount: number) =>
+    amount.toLocaleString("id-ID", { style: "currency", currency: "IDR" });
 
   if (loading) return <p className="text-center">Loading...</p>;
   if (!event) return <p className="text-center">Event tidak ditemukan.</p>;
@@ -67,7 +73,11 @@ export default function CheckoutPage() {
         <h2 className="text-xl font-bold mb-4">Detail Pemesanan</h2>
         <div className="flex gap-4">
           <Image
-            src={event.image || '/placeholder.jpg'}
+            src={
+              event.image
+                ? `${process.env.NEXT_PUBLIC_BASE_API_URL}${event.image}`
+                : "/placeholder.jpg"
+            }
             alt={event.name}
             width={200}
             height={120}
@@ -75,9 +85,12 @@ export default function CheckoutPage() {
           />
           <div>
             <h3 className="text-lg font-semibold">{event.name}</h3>
-            <p className="text-sm text-gray-600">{event.category} &mdash; {event.location}</p>
+            <p className="text-sm text-gray-600">
+              {event.category} &mdash; {event.location}
+            </p>
             <p className="text-sm text-gray-500">
-              {new Date(event.start_date).toLocaleDateString('id-ID')} - {new Date(event.end_date).toLocaleDateString('id-ID')}
+              {new Date(event.start_date).toLocaleDateString("id-ID")} -{" "}
+              {new Date(event.end_date).toLocaleDateString("id-ID")}
             </p>
           </div>
         </div>
@@ -93,7 +106,10 @@ export default function CheckoutPage() {
                 className="w-full border rounded p-2"
                 placeholder="Masukkan kode voucher"
               />
-              <button onClick={applyVoucher} className="bg-indigo-600 cursor-pointer text-white px-4 py-2 rounded hover:bg-indigo-700">
+              <button
+                onClick={applyVoucher}
+                className="bg-indigo-600 cursor-pointer text-white px-4 py-2 rounded hover:bg-indigo-700"
+              >
                 Gunakan
               </button>
             </div>
@@ -108,7 +124,9 @@ export default function CheckoutPage() {
               max={maxPointsAllowed}
               className="w-full border rounded p-2"
             />
-            <p className="text-xs text-gray-500 mt-1">Maksimal potongan {formatIDR(maxPointsAllowed)}</p>
+            <p className="text-xs text-gray-500 mt-1">
+              Maksimal potongan {formatIDR(maxPointsAllowed)}
+            </p>
           </div>
         </div>
       </div>
@@ -137,7 +155,11 @@ export default function CheckoutPage() {
 
         <div className="mt-4 text-sm">
           <label className="flex gap-2 items-start">
-            <input type="checkbox" checked={agreed} onChange={() => setAgreed(!agreed)} />
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={() => setAgreed(!agreed)}
+            />
             Saya setuju dengan syarat & ketentuan
           </label>
         </div>
@@ -147,7 +169,7 @@ export default function CheckoutPage() {
           disabled={!agreed}
           className="mt-6 w-full py-2 bg-green-600 cursor-pointer text-white rounded hover:bg-green-700 disabled:opacity-50"
         >
-          {ticketPrice === 0 ? 'Dapatkan Tiket Gratis' : 'Bayar Sekarang'}
+          {ticketPrice === 0 ? "Dapatkan Tiket Gratis" : "Bayar Sekarang"}
         </button>
       </div>
     </div>
