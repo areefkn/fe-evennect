@@ -91,7 +91,7 @@ export default function UserProfile() {
               >
                 <p className="font-bold text-green-800">Code: {coupon.code}</p>
                 <p className="text-sm text-gray-700">
-                  Discount: {coupon.discount}%
+                  Discount: {coupon.discount}
                 </p>
                 <p className="text-sm text-gray-500">
                   Expires at:{" "}
