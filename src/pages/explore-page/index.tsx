@@ -24,7 +24,7 @@ export default function ExploreEvents() {
         );
         setEvents(res.data.data || []);
       } catch (err) {
-        console.error('🔥 ERROR FETCHING EVENTS:', err);
+        // console.error('🔥 ERROR FETCHING EVENTS:', err);
         setEvents([]);
       } finally {
         setLoading(false);
