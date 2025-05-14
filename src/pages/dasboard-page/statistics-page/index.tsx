@@ -42,7 +42,7 @@ export default function StatisticsPage() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-semibold mb-4">Statistics</h1>
+      <h1 className="text-3xl font-semibold text-gray-800 mb-8">Statistics</h1>
 
       {/* Summary Box */}
       <StatisticsSummary />
