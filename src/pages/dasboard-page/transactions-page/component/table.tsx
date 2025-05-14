@@ -43,14 +43,17 @@ export default function TransactionTable({ data, onReload }: Props) {
                 {trx.status.replace("_", " ")}
               </td>
               <td className="px-4 py-2 border">
-                {trx.proof ? (
+                {trx.payment_proof ? (
                   <a
-                    href={`${process.env.NEXT_PUBLIC_BASE_API_URL}${trx.proof}`}
+                    href={`${process.env.NEXT_PUBLIC_BASE_API_URL}${trx.payment_proof}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-blue-600 underline hover:text-blue-800"
                   >
-                    View
+                    <img
+                      src={`${process.env.NEXT_PUBLIC_BASE_API_URL}${trx.payment_proof}`}
+                      alt="payment proof"
+                      className="w-10 h-10 object-cover border rounded shadow mx-auto"
+                    />
                   </a>
                 ) : (
                   <span className="text-gray-400 italic">No proof</span>
