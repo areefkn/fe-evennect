@@ -127,7 +127,8 @@ export default function Navbar() {
                     ) : (
                       <>
                         <button
-                          onClick={() => router.push("/my-tickets")}
+                        // my-tickets
+                          onClick={() => router.push("/")}
                           className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
                         >
                           My Ticket
