@@ -18,7 +18,7 @@ export default function OrganizerTransactions() {
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/transactions/organizer`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: 'Bearer ' + token,
           },
         }
       );

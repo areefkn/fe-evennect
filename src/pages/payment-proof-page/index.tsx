@@ -6,35 +6,32 @@ import { useParams } from 'next/navigation';
 import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
+import { access } from 'fs';
+import { getCookie } from "cookies-next";
+import { ITransaction } from './components/types';
 
-interface Transaction {
-  id: string;
-  total_price: number;
-  status: string;
-  ticket_type: {
-    event: {
-      name: string;
-      image: string;
-    };
-  };
-}
 
 export default function PaymentProofMain() {
   const { id } = useParams() as { id: string };
-  const [transaction, setTransaction] = useState<Transaction | null>(null);
+  const [transaction, setTransaction] = useState<ITransaction | null>(null);
   const [proof, setProof] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const access_token = getCookie("access_token") as string;
 
   useEffect(() => {
     if (!id) return;
+    
+    console.log(id);
     axios
       .get(`${process.env.NEXT_PUBLIC_BASE_API_URL}/transactions/${id}`, {
         headers: {
-          Authorization: 'Bearer ' + localStorage.getItem('access_token'),
+          Authorization: "Bearer " + access_token
         },
+        
       })
-      .then((res) => setTransaction(res.data.data))
+      .then((res) => setTransaction(res.data.transaction))
+      
       .catch(() => setTransaction(null));
   }, [id]);
 
@@ -48,7 +45,7 @@ export default function PaymentProofMain() {
       await axios.put(`${process.env.NEXT_PUBLIC_BASE_API_URL}/transactions/${id}/upload-proof`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          Authorization: 'Bearer ' + localStorage.getItem('access_token'),
+          Authorization: "Bearer " + access_token
         },
       });
       alert('Bukti pembayaran berhasil diunggah!');
@@ -60,9 +57,9 @@ export default function PaymentProofMain() {
   };
 
   if (!transaction) return <p className="text-center mt-10">Transaksi tidak ditemukan.</p>;
-
+  
   return (
-    <div className="max-w-xl mx-auto p-4 bg-white shadow rounded mt-6">
+    <div className="max-w-xl mx-auto p-4 bg-white shadow rounded-2xl h-90 mt-6">
       <h1 className="text-xl font-semibold mb-4">Unggah Bukti Pembayaran</h1>
       <div className="flex gap-4 items-center mb-4">
         <Image
@@ -79,7 +76,10 @@ export default function PaymentProofMain() {
         </div>
       </div>
 
-      <input type="file" onChange={(e) => setProof(e.target.files?.[0] || null)} className="mb-4" />
+
+      <div className='flex w-80'>
+      <input type="file" onChange={(e) => setProof(e.target.files?.[0] || null)} className="mb-4 border rounded w-80 " />
+      </div>
 
       {error && <p className="text-red-600 text-sm mb-2">{error}</p>}
 
