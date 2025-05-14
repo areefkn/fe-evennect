@@ -95,7 +95,7 @@ export default function MyEvent() {
   const handleEditModalClose = () => setSelectedEditEvent(null);
 
   return (
-    <>
+    <div className="p-6">
       <h1 className="text-3xl font-semibold text-gray-800 mb-8">My Events</h1>
 
       <div className="mb-8">
@@ -229,6 +229,6 @@ export default function MyEvent() {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }

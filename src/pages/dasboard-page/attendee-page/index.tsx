@@ -45,8 +45,10 @@ export default function AttendeePage() {
   }, []);
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold text-gray-800">Attendees Per Event</h1>
+    <div className="p-6">
+      <h1 className="text-3xl font-semibold text-gray-800 mb-8">
+        Attendees Per Event
+      </h1>
 
       {data.length === 0 ? (
         <p className="text-gray-500">No events found.</p>
