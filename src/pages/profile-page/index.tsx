@@ -1,11 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import UserProfile from "./components/UserProfile";
 import ProfileSettingForm from "./components/ProfileSettingForm";
+import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<"profile" | "setting">("profile");
+
+  const getToken = () =>
+    document.cookie
+      .split("; ")
+      .find((c) => c.startsWith("access_token="))
+      ?.split("=")[1];
+
+  useEffect(() => {
+    const token = getToken();
+
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+  }, []);
 
   const menuItems = [
     { key: "profile", label: "User Profile" },
