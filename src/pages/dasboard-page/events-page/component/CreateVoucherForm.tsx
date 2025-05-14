@@ -78,7 +78,7 @@ const CreateVoucherForm = ({ eventId, onSuccess }: Props) => {
             htmlFor="discount"
             className="block text-sm font-medium text-gray-700"
           >
-            Discount (%)
+            Discount
           </label>
           <Field
             id="discount"
