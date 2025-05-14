@@ -67,12 +67,15 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-18">
           {/* Logo */}
-          <Link
-            href="/"
-            className="text-2xl font-bold hover:text-gray-200 transition"
-          >
-            LOGO
-          </Link>
+        <Link
+          href="/"
+          className="relative inline-block text-2xl font-semibold text-white tracking-wide hover:text-white transition
+            before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/60 before:to-transparent
+            before:-translate-x-full before:animate-shine before:w-full before:h-full before:rounded-md before:pointer-events-none overflow-hidden"
+        >
+          <span className="relative z-10">Evennect</span>
+        </Link>
+
 
           {/* Search */}
           <div className="flex-1 mx-8 px-4">
