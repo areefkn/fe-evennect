@@ -35,7 +35,7 @@ export default function ExploreEvents() {
   }, [category, location]);
 
   return (
-    <div className="max-w-screen-lg mx-auto px-4">
+    <div className="max-w-screen-lg mx-auto px-4 pb-20">
       <EventFilter
         category={category}
         setCategory={setCategory}

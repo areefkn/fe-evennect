@@ -34,7 +34,7 @@ const SeachMain = () => {
   }, [query]);
 
   return (
-    <div className="max-w-screen-xl mx-auto px-4">
+    <div className="max-w-screen-xl mx-auto px-4 pb-20">
       <h1 className="text-xl font-bold mb-6">Hasil pencarian: "{query}"</h1>
       {loading ? (
         <p>Loading...</p>
@@ -44,9 +44,9 @@ const SeachMain = () => {
             <CardEvents
               key={event.id}
               imageUrl={
-                event.image
-                  ? `${process.env.NEXT_PUBLIC_BASE_API_URL}${event.image}`
-                  : "/placeholder.jpg"
+                event.image?.startsWith("http")
+                  ? event.image
+                  : `${process.env.NEXT_PUBLIC_BASE_API_URL}${event.image || ""}`
               }
               title={event.name}
               date={new Date(event.start_date).toLocaleDateString("id-ID", {
