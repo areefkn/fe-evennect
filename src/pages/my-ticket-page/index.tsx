@@ -68,21 +68,21 @@ export default function MyTicketMain() {
         </section>
       )}
 
-      {pastTickets.length > 0 && (
-        <section>
-          <h2 className="text-lg font-semibold mb-4">Riwayat Tiket</h2>
-          <div className="space-y-4">
-            {pastTickets.map((trx) => (
-              <TicketCard key={trx.id} trx={trx} showReviewButton />
-            ))}
+      {pastTickets.map((trx) => {
+        console.log("🧾 Past Ticket Check:", {
+          id: trx.id,
+          status: trx.status,
+          review: trx.review,
+        });
+
+        return <TicketCard key={trx.id} trx={trx} showReviewButton />;
+      })}
           </div>
-        </section>
-      )}
-    </div>
-  );
-}
+        );
+      }
 
 function TicketCard({ trx, showReviewButton = false }: { trx: ImyTicket; showReviewButton?: boolean }) {
+  console.log("🧾 Ticket Data:", trx); // debug
   return (
     <div className="flex flex-col sm:flex-row gap-4 bg-white border shadow-sm rounded-xl p-4 hover:shadow-md transition">
       <div className="w-full sm:w-40 h-28 relative">
@@ -107,14 +107,15 @@ function TicketCard({ trx, showReviewButton = false }: { trx: ImyTicket; showRev
             Dibeli pada: {format(new Date(trx.created_at), 'dd MMM yyyy')}
           </p>
         </div>
-        {showReviewButton && trx.status === 'DONE' && !trx.review && (
+        {showReviewButton  && trx.status === 'DONE' && !trx.review?.id && ( 
           <a
-            href={`/review/${trx.ticket_type.event.id}`}
+            href={`/reviewers/${trx.ticket_type.event.id}?transaction_id=${trx.id}&image=${trx.ticket_type.event.image}&name=${trx.ticket_type.event.name}`}
             className="text-sm mt-2 inline-block text-indigo-600 hover:underline"
           >
             Beri Review
           </a>
         )}
+        
       </div>
     </div>
   );

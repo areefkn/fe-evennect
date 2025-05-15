@@ -23,6 +23,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-redux": "^9.2.0",
+    "react-toastify": "^11.0.5",
     "recharts": "^2.15.3",
     "sweetalert2": "^11.19.1",
     "yup": "^1.6.1"
@@ -35,6 +36,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/react-toastify": "^4.0.2",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
