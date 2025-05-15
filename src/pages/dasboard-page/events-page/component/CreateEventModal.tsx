@@ -3,7 +3,11 @@
 import { useState } from "react";
 import CreateEventForm from "./form";
 
-const CreateEventModal = ({ onSuccess }: { onSuccess: () => void }) => {
+export default function CreateEventModal({
+  onSuccess,
+}: {
+  onSuccess: () => void;
+}) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSuccess = () => {
@@ -37,6 +41,4 @@ const CreateEventModal = ({ onSuccess }: { onSuccess: () => void }) => {
       )}
     </>
   );
-};
-
-export default CreateEventModal;
+}
