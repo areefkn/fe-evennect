@@ -277,7 +277,7 @@ export default function MyEvent() {
                     eventId={event.id}
                     onSuccess={() => {
                       handleVoucherModalClose();
-                      // Optional: fetch vouchers again
+                      fetchVouchers(event.id);
                     }}
                   />
                 </div>

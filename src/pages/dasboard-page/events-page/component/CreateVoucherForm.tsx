@@ -9,7 +9,7 @@ interface Props {
   onSuccess: () => void;
 }
 
-const CreateVoucherForm = ({ eventId, onSuccess }: Props) => {
+export default function CreateVoucherForm({ eventId, onSuccess }: Props) {
   return (
     <Formik
       initialValues={{
@@ -143,6 +143,4 @@ const CreateVoucherForm = ({ eventId, onSuccess }: Props) => {
       </Form>
     </Formik>
   );
-};
-
-export default CreateVoucherForm;
+}

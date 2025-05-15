@@ -12,7 +12,11 @@ const getToken = () =>
     .find((c) => c.startsWith("access_token="))
     ?.split("=")[1];
 
-const CreateEventForm = ({ onSuccess }: { onSuccess: () => void }) => {
+export default function CreateEventForm({
+  onSuccess,
+}: {
+  onSuccess: () => void;
+}) {
   const initialValues: CreateEventPayload = {
     name: "",
     description: "",
@@ -36,18 +40,17 @@ const CreateEventForm = ({ onSuccess }: { onSuccess: () => void }) => {
         }
       }
 
-      // Append file explicitly as "file"
       if (values.image) {
         formData.append("file", values.image);
       }
 
       await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/events`,
-        formData, //  pakai FormData
+        formData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data", //  penting untuk upload file
+            "Content-Type": "multipart/form-data",
           },
         }
       );
@@ -165,6 +168,4 @@ const CreateEventForm = ({ onSuccess }: { onSuccess: () => void }) => {
       )}
     </Formik>
   );
-};
-
-export default CreateEventForm;
+}
