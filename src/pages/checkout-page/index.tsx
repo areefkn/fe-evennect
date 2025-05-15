@@ -6,6 +6,7 @@ import axios from 'axios';
 import Image from 'next/image';
 import { ICheckout } from './components/types';
 import { getCookie } from "cookies-next";
+import Swal from 'sweetalert2';
 
 
 export default function CheckoutPage() {
@@ -39,12 +40,19 @@ export default function CheckoutPage() {
       setVoucherDiscount(res.data.discount);
 
       setVoucherId(res.data.id); // simpan ID voucher
-      alert('Voucher berhasil digunakan!');
+          Swal.fire({
+            icon: 'success',
+            title: 'Horee...',
+            text: 'Voucher berhasil digunakan!',
+          });
     } catch {
       setVoucherDiscount(0);
       setVoucherId(null);
-      alert('Voucher tidak valid.');
-
+        Swal.fire({
+          icon: 'warning',
+          title: 'Oops...',
+          text: 'Voucher tidak valid.!',
+        });
     }
   };
 
@@ -68,14 +76,27 @@ export default function CheckoutPage() {
 
       router.push(`/payment-proof/${res.data.data.id}`);
     } catch (err: any) {
-      alert(err.response?.data?.message || "Checkout gagal");
+      // alert(err.response?.data?.message || "Checkout gagal");
+
+      Swal.fire({
+        icon: 'error',
+        title: 'Checkout Gagal!',
+        text: err.response?.data?.message || 'Anda sudah membeli tiket ini sebelumnya. Silakan cek halaman tiket Anda.',
+      });
     }
   };
 
   const formatIDR = (amount: number) =>
     amount.toLocaleString("id-ID", { style: "currency", currency: "IDR" });
 
-  if (loading) return <p className="text-center">Loading...</p>;
+  if (loading)
+    return (
+      <div className="min-h-[90vh] flex flex-col items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-indigo-500 mb-4"></div>
+        <p className="text-gray-600 font-semibold">Memuat data transaksi...</p>
+      </div>
+    );
+
   if (!event) return <p className="text-center">Event tidak ditemukan.</p>;
 
   const ticketPrice = event.ticket_types?.[0]?.price ?? 0;
@@ -133,13 +154,30 @@ export default function CheckoutPage() {
 
           <div>
             <label className="block font-medium mb-1">Gunakan Poin</label>
-            <input
-              type="number"
-              value={usedPoints}
-              onChange={(e) => setUsedPoints(Number(e.target.value))}
-              max={maxPointsAllowed}
-              className="w-full border rounded p-2"
-            />
+            <div className="flex gap-2">
+              <input
+                type="number"
+                value={usedPoints === 0 ? '' : usedPoints}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === '') {
+                    setUsedPoints(0);
+                  } else {
+                    setUsedPoints(Number(val));
+                  }
+                }}
+                max={maxPointsAllowed}
+                className="w-full border rounded p-2"
+                placeholder="Masukkan poin"
+              />
+              <button
+                type="button"
+                onClick={() => setUsedPoints(maxPointsAllowed)}
+                className="bg-indigo-600 text-white px-3 rounded hover:bg-indigo-700 text-sm"
+              >
+                Gunakan Semua
+              </button>
+            </div>
             <p className="text-xs text-gray-500 mt-1">
               Maksimal potongan {formatIDR(maxPointsAllowed)}
             </p>

@@ -105,7 +105,7 @@ export default function Navbar() {
                       alt="avatar"
                       width={36}
                       height={36}
-                      className="object-cover w-full h-full"
+                      className="object-cover w-full h-full cursor-pointer"
                     />
                   </div>
                 </button>

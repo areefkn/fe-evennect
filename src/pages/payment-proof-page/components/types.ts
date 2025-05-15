@@ -6,6 +6,9 @@ export interface ITransaction {
     event: {
       name: string;
       image: string;
+      organizer: {
+        payment_proof: string;
+      };
     };
   };
 }

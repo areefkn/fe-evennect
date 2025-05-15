@@ -1,13 +1,11 @@
 export interface ImyTicket {
   id: string;
-  user_id: string;
+  created_at: string;
   total_price: number;
   status: string;
-  created_at: string;
+  review?: { id: string } | null;
   ticket_type: {
-    id: string;
     name: string;
-    price: number;
     event: {
       id: string;
       name: string;
@@ -16,5 +14,4 @@ export interface ImyTicket {
       end_date: string;
     };
   };
-  review?: { id: string } | null;
 }
