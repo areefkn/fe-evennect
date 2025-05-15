@@ -153,6 +153,7 @@ export default function RegisterForm() {
                     value={values.role}
                     className="border border-gray-300 rounded-lg p-2"
                   >
+                    <option value="" disabled hidden>Pilih Role</option>
                     <option value="CUSTOMER">CUSTOMER</option>
                     <option value="ORGANIZER">ORGANIZER</option>
                   </Field>
