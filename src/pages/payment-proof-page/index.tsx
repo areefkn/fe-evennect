@@ -6,7 +6,7 @@ import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
 import { getCookie } from 'cookies-next';
-import { ITransaction } from './components/types';
+import { ITransaction } from '../../interface/Ipaymentproof';
 import Swal from 'sweetalert2';
 
 export default function PaymentProofMain() {

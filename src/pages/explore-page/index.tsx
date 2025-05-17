@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import CardEvents from '@/components/CardEvents';
 import EventFilter from './components/eventFilter';
-import { IEvent } from '../home-page/component/type';
+import { IEvent } from '../../interface/type';
 
 export default function ExploreEvents() {
   const [events, setEvents] = useState<IEvent[]>([]);
