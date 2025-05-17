@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import CardEvents from "@/components/CardEvents";
-import { IEvent, IApiResponse } from "./component/type";
+import { IEvent, IApiResponse } from "../../interface/type";
 
 export default function HomeMain() {
   const [upcomingEvents, setUpcomingEvents] = useState<IEvent[]>([]);

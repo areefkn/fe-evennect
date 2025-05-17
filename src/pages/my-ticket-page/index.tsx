@@ -5,7 +5,7 @@ import axios from 'axios';
 import Image from 'next/image';
 import { format } from 'date-fns';
 import { getCookie } from 'cookies-next';
-import { ImyTicket } from './components/types';
+import { ImyTicket } from '../../interface/Itickket';
 
 export default function MyTicketMain() {
   const [tickets, setTickets] = useState<ImyTicket[]>([]);
